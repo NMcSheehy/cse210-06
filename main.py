@@ -41,23 +41,69 @@ class Object():
         self.y += random.randint(-speed, speed)
 
 class Zombie(Object):
-    def __init__(self, x, y, radius, thickness, speed, fear) -> None:
+    def __init__(self, x, y, radius, thickness, speed, fear, vision) -> None:
         super().__init__(x, y, radius, thickness, speed)
         self.fear = fear
+        self.vision = vision
 
-    def move(self):
+    def move(self, villagers):
+
         x, y = pygame.mouse.get_pos()
 
+        # If the zombie is close to the mouse
+        # for x Axis
+        if abs(self.x - x) < self.fear and abs(self.y - y) < self.fear:
+            # make the zombie run away from the mouse
+            if self.x > x:
+                self.x += self.speed
+            if self.x < x:
+                self.x -= self.speed
+            if self.y > y:
+                self.y += self.speed
+            if self.y < y:
+                self.y -= self.speed
         self.x += random.randint(-speed, speed)
         self.y += random.randint(-speed, speed)
 
+        for villager in villagers:
+            if abs(self.x - villager.x) < self.vision and abs(self.y - villager.y) < self.vision:
+                if self.x < villager.x:
+                    self.x += self.speed // 2
+                if self.x > villager.x:
+                    self.x -= self.speed // 2
+                if self.y < villager.y:
+                    self.y += self.speed // 2
+                if self.y > villager.y:
+                    self.y -= self.speed // 2
+                    break
+
+
 class Villager(Object):
-    def __init__(self, x, y, radius, thickness, speed) -> None:
+    def __init__(self, x, y, radius, thickness, speed, health) -> None:
         super().__init__(x, y, radius, thickness, speed)
+        self.health = health
+        self.alive = True
 
     def move(self):
         self.x += random.randint(-speed, speed)
         self.y += random.randint(-speed, speed)
+
+    def infect(self, zombies):
+        if self.health == 0:
+            self.alive = False
+            print('dead villager')
+            zombies.append(Zombie(
+            self.x, 
+            self.y, 
+            radius, 
+            thickness, 
+            5, 
+            50,
+            250))
+
+        for zombie in zombies:
+            if abs(self.x - zombie.x) < radius * 2 and abs(self.y - zombie.y) < radius * 2:
+                self.health -= 1
 
 def main():
     # setup the game window
@@ -70,11 +116,24 @@ def main():
     
     zombies = []
     for _ in range(10):
-        zombies.append(Zombie(window_width // 3, window_height // 2, radius, thickness, 5, 50))
+        zombies.append(Zombie(
+            random.randint(0, window_width // 3), 
+            random.randint(0, window_height), 
+            radius, 
+            thickness, 
+            5, 
+            50,
+            250))
 
     villagers = []
     for _ in range(10):
-        villagers.append(Villager(window_width // 1.5, window_height // 2, radius, thickness, 5))
+        villagers.append(Villager(
+            random.randint(window_width // 1.5, window_width), 
+            random.randint(0, window_height),
+            radius, 
+            thickness, 
+            5,
+            10))
 
 
     while running:
@@ -89,10 +148,19 @@ def main():
 
         # Update Game
         for zombie in zombies:
-            zombie.move()
+            zombie.move(villagers)
 
+        count = 0
         for villager in villagers:
+            
             villager.move()
+            villager.infect(zombies)
+            if not villager.alive:
+                villagers.pop(count)
+            count += 1
+                
+
+        
 
         # Draw Display (bottom layer to top)
         display.fill(bg_color)
