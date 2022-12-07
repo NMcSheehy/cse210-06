@@ -3,7 +3,40 @@ pygame.init()
 import random
 
 def main():
-    window = Window()
+    zombie_sprite_list = [
+        "Brain Zombie.png",
+        "Bald Zombie.png",
+        "Jelly Zombie.png",
+        "Flower Zombie.png",
+        "Boy Zombie.png",
+        "Top Hat Zombie.png",
+        "Bride Zombie.png",
+        "Brown Hat Zombie.png",
+        "Mushroom Zombie.png",
+        "Crystal Zombie.png",
+        "Torch Zombie.png",
+        "Cold Zombie.png",
+        "Girl Zombie.png", 
+        "Eye Zombie.png",
+        "Fisherman Zombie.png"
+        ]
+    villager_sprite_list = [
+        "Miss Clause.png",
+        "Black Hair.png",
+        "Mushroom Man.png",
+        "Scrooge.png",
+        "Girl Villiger.png",
+        "Wizard.png",
+        "Innkeep.png",
+        "Kid.png",
+        "Hood.png",
+        "Hard Hat.png",
+        "Trump.png",
+        "Old Man.png",
+        "Boy Villiger.png"
+    ]
+    
+    window = Window(1000, 750, "Zombie Infection!", (255,255,255))
     
     game = Director(60)
     
@@ -12,6 +45,7 @@ def main():
 class Director():
     def __init__(self, FPS):
         self.playing = True
+        self.FPS = FPS
         
         self.clock = pygame.time.Clock()
     
@@ -21,14 +55,40 @@ class Director():
             level = 1
             match level:
                 case 1:
-                    pass
+                    complete_1 = False
+                    
+                    if complete_1 == True:
+                        level += 1
                 case 2:
-                    pass
+                    complete_2 = False
+                    
+                    if complete_2 == True:
+                        level += 1
                 case 3:
-                    pass
+                    complete_3 = False
+                    
+                    if complete_3 == True:
+                        pass
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.playing = False   
+                
+            window.draw()
 
 class Window():
-    pass
+    def __init__(self, width, height, name, background):
+        self.width = width
+        self.height = height
+        self.name = name
+        self.background = background
+        
+        self.display = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption(self.name)
+        
+    def draw(self):
+        self.display.fill(self.background)
+        
+        pygame.display.update()
 
 class NPC():
     def __init__(self, path, width, height, x, y, speed, infection_rate):
