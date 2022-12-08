@@ -241,16 +241,18 @@ def main():
             print(elapsed_time)
 
             for zombie in zombies:
-                zombie.speed += 1
-                zombies.append(Zombie(
-                    random.randint(0, window_width // 3), 
-                    random.randint(0, window_height), 
-                    radius, 
-                    thickness, 
-                    5, 
-                    50,
-                    250))
-                break
+                zombie.speed += .2
+                zombie.fear -= .1
+                zombie.vision += 1
+            zombies.append(Zombie(
+                random.randint(0, window_width // 3), 
+                random.randint(0, window_height), 
+                radius, 
+                thickness, 
+                5, 
+                50,
+                250))
+
 
         for zombie in zombies:
             zombie.move(villagers)
