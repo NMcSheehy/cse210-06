@@ -2,6 +2,7 @@
 import pygame
 import random
 import time
+from pictures import *
 
 pygame.init()
 
@@ -82,10 +83,11 @@ class Object():
         self.y += random.randint(-speed, speed)
 
 class Zombie(Object):
-    def __init__(self, x, y, radius, thickness, speed, fear, vision) -> None:
+    def __init__(self, x, y, radius, thickness, speed, fear, vision, path) -> None:
         super().__init__(x, y, radius, thickness, speed)
         self.fear = fear
         self.vision = vision
+        self.path = f'pictures\{path}'
 
     def move(self, villagers):
 
@@ -129,11 +131,12 @@ class Zombie(Object):
 
 
 class Villager(Object):
-    def __init__(self, x, y, radius, thickness, speed, health, vision) -> None:
+    def __init__(self, x, y, radius, thickness, speed, health, vision, path) -> None:
         super().__init__(x, y, radius, thickness, speed)
         self.health = health
         self.alive = True
         self.vision = vision
+        self.path = f'pictures\{path}'
 
     def move(self, zombies):
 
@@ -172,7 +175,8 @@ class Villager(Object):
             thickness, 
             5, 
             50,
-            250))
+            250,
+            random.choice(zombie_sprite_list)))
 
         for zombie in zombies:
             if abs(self.x - zombie.x) < radius * 3 and abs(self.y - zombie.y) < radius * 3:
@@ -200,7 +204,8 @@ def main():
             thickness, 
             5, 
             50,
-            250))
+            250, 
+            random.choice(zombie_sprite_list)))
 
     villagers = []
     for _ in range(10):
@@ -211,7 +216,8 @@ def main():
             thickness, 
             5,
             10,
-            250))
+            250,
+            random.choice(villager_sprite_list)))
 
     while running:
         # Clock the FPS
@@ -251,7 +257,8 @@ def main():
                 thickness, 
                 5, 
                 50,
-                250))
+                250,
+                random.choice(zombie_sprite_list)))
 
 
         for zombie in zombies:
@@ -277,12 +284,30 @@ def main():
         # Draw Villagers
         for villager in villagers:
             pygame.draw.circle(display, villager_color, (villager.x, villager.y), villager.radius, villager.thickness)
+            villager_img = pygame.image.load(villager.path)
+            vill_img_resize = pygame.transform.scale(villager_img, (15, 20))
+            display.blit(vill_img_resize, (villager.x - radius, villager.y - radius))
+            pygame.draw.rect(display, villager_color, [villager.x - radius - 1, villager.y - radius - 1, 17, 22], 2)
 
         # Draw Zombie
         for zombie in zombies:
             pygame.draw.circle(display, zombie_color, (zombie.x, zombie.y), zombie.radius, zombie.thickness)
+            zombie_img = pygame.image.load(zombie.path)
+            zomb_img_resize = pygame.transform.scale(zombie_img, (15,20))
+            display.blit(zomb_img_resize, (zombie.x - radius, zombie.y - radius))
+            pygame.draw.rect(display, zombie_color, [zombie.x - radius - 1, zombie.y - radius - 1, 17, 22], 2)
 
         display.blit(text, textRect)
+        
+        # Change cursor image
+        pygame.mouse.set_visible(False)
+        torch = "torch.png"
+        cursor_img = pygame.image.load(f"pictures\{torch}")
+        cursor_pos_x, cursor_pos_y = pygame.mouse.get_pos()
+        cursor_img_resize = pygame.transform.scale(cursor_img, (20, 20))
+        display.blit(cursor_img_resize, (cursor_pos_x, cursor_pos_y))
+        pygame.draw.rect(display, (0,0,0), [cursor_pos_x, cursor_pos_y, 22, 22], 2)
+        
 
         # Update Window
         pygame.display.set_caption(title)
