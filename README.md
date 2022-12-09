@@ -3,7 +3,7 @@ images are from Terraria
 
 the object of the game is to keep the villagers as safe as possible. 
 
-Zombies are green and Villagers are blue!
+Zombies are outlined in  green and Villagers are outlined in blue!
 
 they will naturally run from the zombies but can't leave the window borders.
 zombies will spawn on the screen every second.
