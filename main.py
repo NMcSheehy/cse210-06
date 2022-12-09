@@ -69,7 +69,6 @@ villager_sprite_list = [
     "Boy Villiger.png"
 ]
     
-
 class Object():
     def __init__(self, x, y, radius, thickness, speed) -> None:
         self.x = x 
@@ -128,7 +127,6 @@ class Zombie(Object):
             self.y = window_height - radius
         if self.y < 0 + radius:
             self.y = 0 + radius
-
 
 class Villager(Object):
     def __init__(self, x, y, radius, thickness, speed, health, vision, path) -> None:
@@ -236,13 +234,10 @@ def main():
         previous_time = elapsed_time
         elapsed_time = round(time.time() - start_time)
 
-
         text = font.render(str(elapsed_time), True, (0,0,0))
         textRect = text.get_rect()
         textRect.center = (window_width // 2, 25)
         
-
-
         if previous_time != elapsed_time:
             print(elapsed_time)
 
@@ -260,7 +255,6 @@ def main():
                 250,
                 random.choice(zombie_sprite_list)))
 
-
         for zombie in zombies:
             zombie.move(villagers)
 
@@ -276,10 +270,8 @@ def main():
         if len(villagers) == 0:
             running = False
                 
-
         # Draw Display (bottom layer to top)
         display.fill(bg_color)
-
 
         # Draw Villagers
         for villager in villagers:
@@ -308,7 +300,6 @@ def main():
         display.blit(cursor_img_resize, (cursor_pos_x, cursor_pos_y))
         pygame.draw.rect(display, (0,0,0), [cursor_pos_x, cursor_pos_y, 22, 22], 2)
         
-
         # Update Window
         pygame.display.set_caption(title)
         pygame.display.update()
